@@ -1,0 +1,25 @@
+{
+  "name": "llamaserver",
+  "version": "1.0.0",
+  "description": "Server for LLAMA.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/woernsn/LLAMAServer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/woernsn/LLAMAServer/issues"
+  },
+  "homepage": "https://github.com/woernsn/LLAMAServer#readme",
+  "dependencies": {
+    "node-xmpp-client": "3.0.4",
+    "express": "4.14.0",
+    "body-parser": "1.15.2",
+    "google-translate-api": "2.2.2"
+  }
+}
