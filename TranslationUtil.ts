@@ -22,6 +22,11 @@ export async function translateMessage(message_language: string, reply_language:
     });
 }
 
+// (async function(){
+//     var msg:any = await translateMessage("EN", "DE", "Hi, how are you");
+//     console.log(msg.text);
+// })();
+
 //TODO make await
 
 

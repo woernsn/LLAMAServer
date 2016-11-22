@@ -1,6 +1,8 @@
 {
+    "application_host": URL,
     "xmpp_host":        "fcm-xmpp.googleapis.com",
     "xmpp_port":        5236,
     "xmpp_jid":         JID,
-    "xmpp_password":    PASSWORD
+    "xmpp_password":    PASSWORD,
+    "database_token":   TOKEN
 }

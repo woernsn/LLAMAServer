@@ -11,11 +11,12 @@ export class DownstreamXMPPMessage {
     delivery_receipt_requested: boolean;
     dry_run: boolean;
 
-    data: Map<string, string>;
+    data: Object;
     notification: AndroidNotification;
 
     constructor() {
         this.message_id = uuid();
+        this.data = {};
     }
 }
 

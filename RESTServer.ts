@@ -2,6 +2,10 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import { IMessage } from './IMessage';
 import * as TU from './TranslationUtil';
+import * as DU from './DatabaseUtil';
+import * as XMPP from './xmpp';
+import { DownstreamXMPPMessage } from './DownstreamXMPPMessage';
+import { AndroidNotification } from './AndroidNotification';
 
 export class RESTServer {
     constructor(private port: number) {
@@ -14,8 +18,10 @@ export class RESTServer {
 
         app.post("/", async (req, res) => {
             console.log("message: " + req.body.message + " from " + req.body.from);
-            if (checkPostData(req.body))
+            if (checkPostData(req.body)) {
                 await processMessage(req.body);
+                res.status(202).send('Created');
+            }
         });
 
         app.listen(port, () => {
@@ -39,8 +45,29 @@ function StringNotEmpty(str: string): boolean {
 }
 
 async function processMessage(message: IMessage) {
-    var translatedMessage: any = await TU.translateMessage(message.message_language, "DE", message.message);
-    console.log("Translated to DE:" + translatedMessage.text);
+    var targetLanguage: any = await DU.getUserLanguage(message.to);
+
+    var translatedMessageObject: any = await TU.translateMessage(message.message_language, targetLanguage, message.message);
+    var translatedMessage = translatedMessageObject.text;
+
+    var firebaseInstanceToken: any = await DU.getFirebaseInstanceToken(message.to);
+
+    //create Notification
+    var notification = new AndroidNotification();
+    notification.title = message.from;
+    notification.body = translatedMessage;
+
+    //create DownstreamXMPPMessage
+    var down_stream_message = new DownstreamXMPPMessage();
+    down_stream_message.data["translated_message"] = translatedMessage;
+    down_stream_message.data["original_message"] = message.message;
+    down_stream_message.data["timestamp"] = message.time.toString();
+    down_stream_message.to = firebaseInstanceToken;
+    down_stream_message.notification = notification;
+
+    XMPP.sendMessage(down_stream_message);
+
+    console.log("Translated to DE:" + translatedMessage);
 }
 
 var rs = new RESTServer(8888);
