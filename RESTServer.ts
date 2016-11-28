@@ -4,11 +4,14 @@ import { IMessage } from './IMessage';
 import * as TU from './TranslationUtil';
 import * as DU from './DatabaseUtil';
 import * as XMPP from './xmpp';
+import * as AsciiLlama from './asciiLlama';
 import { DownstreamXMPPMessage } from './DownstreamXMPPMessage';
 import { AndroidNotification } from './AndroidNotification';
 
 export class RESTServer {
     constructor(private port: number) {
+        console.log(AsciiLlama.getAsciiLlama());
+        console.log("[INFO]\tLlama is waking up...");
         let app = express();
 
         app.use(bodyParser.json());
@@ -25,7 +28,7 @@ export class RESTServer {
         });
 
         app.listen(port, () => {
-            console.log("REST server running at port " + port);
+            console.log("[INFO]\tLlama wants food from port " + port + '.');
         })
     }
 }
@@ -66,8 +69,6 @@ async function processMessage(message: IMessage) {
     down_stream_message.notification = notification;
 
     XMPP.sendMessage(down_stream_message);
-
-    console.log("Translated to DE:" + translatedMessage);
 }
 
 var rs = new RESTServer(8888);

@@ -14,16 +14,16 @@ var client = new XMPPClient.Client({
 })
 
 client.on('online', function () {
-	console.log('XMPP Client is running and online')
+	console.log('[INFO]\tLlama learned how to communicate via XMPP!')
 })
 
 client.on('stanza', function (stanza) {
-	console.log('Sending response: ' + stanza.root().toString())
+	console.log('[DEBUG]\tI got a response: ' + stanza.root().toString())
 
 })
 
 client.on('error', function (e) {
-	console.error(e)
+	console.error(e);
 })
 
 export function sendMessage(xmpp_message: DownstreamXMPPMessage) {
