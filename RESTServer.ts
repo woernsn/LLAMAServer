@@ -8,7 +8,7 @@ import * as XMPP from './xmpp';
 import * as AsciiLlama from './asciiLlama';
 import { AndroidNotification } from './AndroidNotification'
 
-export class RESTServer {
+export class LlamaServer {
     constructor(private port: number) {
         console.log(AsciiLlama.getAsciiLlama());
         console.log("[INFO]\tLlama is waking up...");
@@ -28,7 +28,7 @@ export class RESTServer {
         });
 
         app.listen(port, () => {
-            console.log("[INFO]\tLlama wants food from port " + port + '.');
+            console.log("[INFO]\tLlama wants food from po(r)t " + port + '.');
         })
     }
 }
@@ -52,12 +52,16 @@ async function processMessage(message: Message.IMessageFromApp) {
 
     var translatedMessages = {};
 
+    // process message for every member in a chat!
+    var myself: boolean;
     for (var memberId in chatMembers) {
+        // skip myself
+        myself = false;
         if (memberId == message.from) {
-            continue;
+            myself = true;
         }
         // create and send message
-        var translation = await processTextMessage(memberId, message);
+        var translation = await processTextMessage(memberId, message, myself);
         if (translation['language'] != message.message_language) {
             translatedMessages[translation['language']] = translation['translation'];
         }
@@ -65,33 +69,14 @@ async function processMessage(message: Message.IMessageFromApp) {
 
     addMessageToDB(message, translatedMessages);
     addMessageToChatToDB(message);
-
-    // insert message to database
-    // add to sender
-    // var chat: IChat = {
-    //     lastMessage: translatedMessage,
-    //     timestamp: new Date(),
-
-    // }
-
-    // add to receiver
-    //TODO
-
-    // send Translation as message
-
 }
 
-async function processTextMessage(userId, message: Message.IMessageFromApp): Promise<Object> {
+async function processTextMessage(userId, message: Message.IMessageFromApp, myself: boolean): Promise<Object> {
     var targetLanguage: any = await DU.getUserLanguage(userId);
     var translatedMessageObject: any = await TU.translateMessage(message.message_language, targetLanguage, message.message);
     var translatedMessage = translatedMessageObject.text;
     var firebaseInstanceToken: any = await DU.getFirebaseInstanceToken(userId);
     var senderName: any = await DU.getUserName(message.from);
-
-    // create Notification
-    var notification = new AndroidNotification();
-    notification.title = senderName;
-    notification.body = translatedMessage;
 
     // create DownstreamXMPPMessage
     var down_stream_message = new Message.DownstreamXMPPMessage();
@@ -99,7 +84,14 @@ async function processTextMessage(userId, message: Message.IMessageFromApp): Pro
     down_stream_message.data["original_message"] = message.message;
     down_stream_message.data["timestamp"] = new Date();
     down_stream_message.to = firebaseInstanceToken;
-    down_stream_message.notification = notification;
+
+    if (!myself) {
+        // create Notification
+        var notification = new AndroidNotification();
+        notification.title = senderName;
+        notification.body = translatedMessage;
+        down_stream_message.notification = notification;
+    }
 
     XMPP.sendMessage(down_stream_message);
 
@@ -135,4 +127,4 @@ async function addMessageToChatToDB(message: Message.IMessageFromApp) {
     DU.updateChat(message.to, modifiedChat);
 }
 
-var rs = new RESTServer(8888);
+var rs = new LlamaServer(8888);
