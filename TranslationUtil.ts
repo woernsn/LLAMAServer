@@ -21,25 +21,3 @@ export async function translateMessage(message_language: string, reply_language:
             )
     });
 }
-
-// (async function(){
-//     var msg:any = await translateMessage("EN", "DE", "Hi, how are you");
-//     console.log(msg.text);
-// })();
-
-//TODO make await
-
-
-//private async translate(text: string): Promise<string> {
-//     return new Promise<string>((resolve, reject) => {
-//         Translator.translate(text).then(
-//             (translatedText: string) => {
-//                 resolve(translatedText);
-//             },
-//             (error) => {
-//                 reject(error);
-//             });
-//     })
-// }
-
-// var translatedText = await translate("Hallo");
