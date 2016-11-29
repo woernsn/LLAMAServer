@@ -73,8 +73,15 @@ async function processMessage(message: Message.IMessageFromApp) {
 
 async function processTextMessage(userId, message: Message.IMessageFromApp, myself: boolean): Promise<Object> {
     var targetLanguage: any = await DU.getUserLanguage(userId);
-    var translatedMessageObject: any = await TU.translateMessage(message.message_language, targetLanguage, message.message);
-    var translatedMessage = translatedMessageObject.text;
+
+    // check for translation need
+    var translatedMessage = "";
+    if (message.message_language == targetLanguage) {
+        translatedMessage = message.message;
+    } else {
+        var translatedMessageObject: any = await TU.translateMessage(message.message_language, targetLanguage, message.message);
+        translatedMessage = translatedMessageObject.text;
+    }
     var firebaseInstanceToken: any = await DU.getFirebaseInstanceToken(userId);
     var senderName: any = await DU.getUserName(message.from);
 
