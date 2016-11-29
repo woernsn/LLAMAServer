@@ -8,49 +8,39 @@ var options = {
     path: ''
 }
 
+var authorizationPath = querystring.stringify({
+    auth: ConfigUtil.getDatabaseToken()
+});
+
 export async function getFirebaseInstanceToken(userId: string): Promise<Object> {
-    var path = querystring.stringify({
-        auth: ConfigUtil.getDatabaseToken()
-    });
+    options.path = "/users/" + userId + "/firebaseInstanceIdToken.json?" + authorizationPath;
 
-    options.path = "/users/" + userId + "/firebaseInstanceIdToken.json?" + path;
-
-    return new Promise<Object>((resolve, reject) => {
-        var request = https.get(options, function (res) {
-            console.log("STATUS: " + res.statusCode);
-            res.on('data', (d) => {
-                var reply = JSON.parse(d.toString('utf8'));
-                console.log("D: " + reply);
-                resolve(reply);
-            });
-        });
-
-        request.on('error', function (e) {
-            console.log("ERROR: " + e);
-            reject(e);
-        });
-    });
+    return get(options);
 }
 
 export async function getUserLanguage(userId: string): Promise<Object> {
-    var path = querystring.stringify({
-        auth: ConfigUtil.getDatabaseToken()
-    })
+    options.path = "/users/" + userId + "/defaultLanguage.json?" + authorizationPath;
 
-    options.path = "/users/" + userId + "/defaultLanguage.json?" + path;
+    return get(options);
+}
 
+export async function getChat(chatId: string): Promise<Object> {
+    options.path = "/chats/" + chatId + "?" + authorizationPath;
+
+    return get(options);
+}
+
+async function get(options): Promise<Object> {
     return new Promise<Object>((resolve, reject) => {
-        var request = https.get(options, function (res) {
-            console.log("STATUS: " + res.statusCode);
+        var request = https.get(options, function(res) {
             res.on('data', (d) => {
                 var reply = JSON.parse(d.toString('utf8'));
-                console.log("D: " + reply);
                 resolve(reply);
             });
         });
 
-        request.on('error', function (e) {
-            console.log("ERROR: " + e);
+        request.on('error', function(e) {
+            console.log("[ERROR]\t" + e);
             reject(e);
         });
     });
