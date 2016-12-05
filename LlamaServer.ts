@@ -10,7 +10,7 @@ import { AndroidNotification } from './AndroidNotification'
 
 export class LlamaServer {
     constructor(private port: number) {
-        console.log(AsciiLlama.getAsciiLlama());
+        console.log(AsciiLlama.getAsciiLlamaHead());
         console.log("[INFO]\tLlama is waking up...");
         let app = express();
 
@@ -112,7 +112,7 @@ function addMessageToDB(message: Message.IMessageFromApp, translatedMessages) {
     // create IDatabaseMessage
     var databaseMessage: Message.IDatabaseMessage = {
         timestamp: new Date(),
-        type: Message.MessageType.text,
+        type: message.type,
         user: message.from,
 
         language: message.message_language,

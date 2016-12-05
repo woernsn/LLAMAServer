@@ -16,8 +16,8 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "RESTServer",
-            "program": "${workspaceRoot}/RESTServer.js",
+            "name": "LlamaServer",
+            "program": "${workspaceRoot}/LlamaServer.js",
             "cwd": "${workspaceRoot}",
             "outFiles": [],
             "sourceMaps": true
