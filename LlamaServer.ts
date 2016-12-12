@@ -89,7 +89,7 @@ async function processTextMessage(userId, message: Message.IMessageFromApp, myse
     var down_stream_message = new Message.DownstreamXMPPMessage();
     down_stream_message.data["translated_message"] = translatedMessage;
     down_stream_message.data["original_message"] = message.message;
-    down_stream_message.data["timestamp"] = new Date();
+    down_stream_message.data["timestamp"] = new Date().getMilliseconds();
     down_stream_message.to = firebaseInstanceToken;
 
     if (!myself) {
