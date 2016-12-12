@@ -1,4 +1,4 @@
-import { DownstreamXMPPMessage } from './DownstreamXMPPMessage';
+import * as Message from './Message';
 import { AndroidNotification } from './AndroidNotification';
 import * as ConfigUtil from './ConfigUtil';
 
@@ -26,7 +26,7 @@ client.on('error', function (e) {
 	console.error(e);
 })
 
-export function sendMessage(xmpp_message: DownstreamXMPPMessage) {
+export function sendMessage(xmpp_message: Message.DownstreamXMPPMessage) {
 	client.send(new XMPPClient.Client.Stanza('message', {
 		id: xmpp_message.message_id
 		})
