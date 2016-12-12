@@ -28,7 +28,7 @@ export interface IMessageFromApp {
 }
 
 export interface IDatabaseMessage {
-    timestamp: Date,
+    timestamp: number,
     type: MessageType,
     user: string,
 

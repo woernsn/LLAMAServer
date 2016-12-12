@@ -111,7 +111,7 @@ async function processTextMessage(userId, message: Message.IMessageFromApp, myse
 function addMessageToDB(message: Message.IMessageFromApp, translatedMessages) {
     // create IDatabaseMessage
     var databaseMessage: Message.IDatabaseMessage = {
-        timestamp: new Date(),
+        timestamp: new Date().getMilliseconds(),
         type: message.type,
         user: message.from,
 
@@ -128,7 +128,7 @@ function addMessageToDB(message: Message.IMessageFromApp, translatedMessages) {
 async function addMessageToChatToDB(message: Message.IMessageFromApp) {
     var senderName: any = await DU.getUserName(message.from);
     var modifiedChat: Chat.IChat = {
-        timestamp: new Date(),
+        timestamp: new Date().getMilliseconds(),
         lastMessage: senderName + ": " + message.message
     }
     DU.updateChat(message.to, modifiedChat);

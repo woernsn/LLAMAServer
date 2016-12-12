@@ -1,6 +1,6 @@
 export interface IChat {
     lastMessage: string;
-    timestamp: Date;
+    timestamp: number;
     type?: IChatType; // not needed for updates
     
     // optional attributes: for groups only
