@@ -25,7 +25,7 @@ export class LlamaServer {
                 await processMessage(req.body);
                 res.status(202).send('Created');
             } else {
-                console.log("[INFO]\tMalformatted message: " + req.body);
+                console.log("[INFO]\tMalformatted message: " + JSON.stringify(req.body));
                 res.status(400).send('Wrong message format!');
             }
         });
