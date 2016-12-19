@@ -24,6 +24,9 @@ export class LlamaServer {
             if (checkPostData(req.body)) {
                 await processMessage(req.body);
                 res.status(202).send('Created');
+            } else {
+                console.log("[INFO]\tMalformatted message: " + req.body);
+                res.status(400).send('Wrong message format!');
             }
         });
 
@@ -37,8 +40,7 @@ function checkPostData(reqBody): boolean {
     return (StringNotEmpty(reqBody.from) &&
         StringNotEmpty(reqBody.to) &&
         StringNotEmpty(reqBody.message) &&
-        StringNotEmpty(reqBody.message_language) &&
-        reqBody.time != null);
+        StringNotEmpty(reqBody.message_language));
 }
 
 function StringNotEmpty(str: string): boolean {
