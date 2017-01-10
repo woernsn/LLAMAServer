@@ -80,10 +80,19 @@ async function processTextMessage(userId, message: Message.IMessageFromApp, myse
     var translatedMessage = "";
     if (message.message_language == targetLanguage) {
         translatedMessage = message.message;
+    } else if (targetLanguage.toLowerCase() == "ll") {
+        translatedMessage = "Happy llama, Sad llama, Mentally disturbed llama, Super llama,Drama llama, Big fat mama llama. [\"The Llama Song\"]";
     } else {
-        var translatedMessageObject: any = await TU.translateMessage(message.message_language, targetLanguage, message.message);
-        translatedMessage = translatedMessageObject.text;
+        try {
+            var translatedMessageObject: any = await TU.translateMessage(message.message_language, targetLanguage, message.message);
+            translatedMessage = translatedMessageObject.text;
+        } catch (e) {
+            // fallback: set original message
+            translatedMessage = message.message; 
+            targetLanguage = message.message_language;
+        }
     }
+
     var firebaseInstanceToken: any = await DU.getFirebaseInstanceToken(userId);
     var senderName: any = await DU.getUserName(message.from);
 
