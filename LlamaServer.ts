@@ -25,7 +25,7 @@ export class LlamaServer {
                 await processMessage(req.body);
                 res.status(202).send('Created');
             } else {
-                console.log("[INFO]\tMalformatted message: " + JSON.stringify(req.body));
+                console.log("[INFO]\tMalformatted message: " + JSON.parse(req.body));
                 res.status(400).send('Wrong message format!');
             }
         });
@@ -91,7 +91,7 @@ async function processTextMessage(userId, message: Message.IMessageFromApp, myse
     var down_stream_message = new Message.DownstreamXMPPMessage();
     down_stream_message.data["translated_message"] = translatedMessage;
     down_stream_message.data["original_message"] = message.message;
-    down_stream_message.data["timestamp"] = new Date().getMilliseconds();
+    down_stream_message.data["timestamp"] = new Date().getTime();
     down_stream_message.to = firebaseInstanceToken;
 
     if (!myself) {
@@ -113,7 +113,7 @@ async function processTextMessage(userId, message: Message.IMessageFromApp, myse
 function addMessageToDB(message: Message.IMessageFromApp, translatedMessages) {
     // create IDatabaseMessage
     var databaseMessage: Message.IDatabaseMessage = {
-        timestamp: new Date().getMilliseconds(),
+        timestamp: new Date().getTime(),
         type: message.type,
         user: message.from,
 
@@ -130,7 +130,7 @@ function addMessageToDB(message: Message.IMessageFromApp, translatedMessages) {
 async function addMessageToChatToDB(message: Message.IMessageFromApp) {
     var senderName: any = await DU.getUserName(message.from);
     var modifiedChat: Chat.IChat = {
-        timestamp: new Date().getMilliseconds(),
+        timestamp: new Date().getTime(),
         lastMessage: senderName + ": " + message.message
     }
     DU.updateChat(message.to, modifiedChat);
